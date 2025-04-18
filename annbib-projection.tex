@@ -1,0 +1,470 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{biblatex}
+%\addbibresource{mybib/BibEntries.bib}
+\addbibresource{local.bib}
+
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{latexsym}
+\usepackage{amssymb}
+
+%% Mathematical Domains
+\newcommand{\ufd}{\mathbb{D}}
+\newcommand{\ufdfrac}{\mathbb{F}}
+\newcommand{\intring}{\mathbb{Z}}
+\newcommand{\ratring}{\mathbb{Q}}
+\newcommand{\realring}{\mathbb{R}}
+\newcommand{\compring}{\mathbb{C}}
+
+%% Systems
+\newcommand{\qepcad}{\textsc{Qepcad}}
+\newcommand{\qepcadb}{\textsc{Qepcad b}}
+\newcommand{\saclib}{\textsc{Saclib}}
+\newcommand{\slfq}{\textsc{SLFQ}}
+\newcommand{\tarski}{\textsc{Tarski}}
+
+
+\title{Projection for Cylindrical Algebraic Decomposition\\
+  \medskip An Annotated Bibliography}
+\author{Christopher W.~Brown, United States Naval Academy}
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Introduction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+This document is an annotated bibliography of papers dealing with
+projection in Cylindrical Algebraic Decomposition (CAD).  Its intended
+audience is people already familiar with the concepts and terminology
+of CAD, and the discussions appearing here are written with
+that audience in mind.  Here are some important points to note when
+comparing and contrasting different projections:
+
+\begin{enumerate}
+\item There are (in my view) three families of projections:
+  Collins-style, McCallum-style and Lazard-style projections.  My
+  organization of the references is organized this way.
+  One could possibly add a fourth family based on triangular
+  decomposition. 
+\item A projection operator cannot be wholly separated from the process of
+  constructing cell representations from the projection.  For
+  example, using ``Lazard projection'' requires ``Lazard lifting'',
+  while using the ``model-based projection'' requires a cell
+  construction procedure that is ``model-based'', i.e. that starts with a
+  sample point and then computes polynomials from it, rather than
+  first computing polynomials and then constructing sample points from
+  them. So, although the language of the paper may refer to a
+  particular projection, implicitly it is also referring to the
+  associated cell-construction process.
+\item One issue that comes up when discussing different projections is
+  \emph{completeness}, which is generally taken to mean that,
+  starting with a formula of the appropriate kind, the projection
+  is always able to produce a truth-invariant CAD for the formula.
+  In the model-based paradigm, ``complete'' typically
+  means that there is a complete non-model-based projection such that 
+  the cell the model-based algorithm produces around the model point is a superset of the
+  cell from the CAD the non-model-based projection would produce from
+  the same formula that contains the model point.
+\item An issue that is, in my view, often overlooked is the question
+  of constructing formulas from CADs or of constructing formulas for 
+  individual cells.  This issue depends on the target language for
+  these formulas as well as the projection operator used and
+  properties of the specific CAD from which a formula is to be
+  constructed.  Typically, these formulas are either required to
+  be \emph{Tarski formulas} or are allowed to also contain
+  \emph{indexed-root expressions}.  In this work, we will say that
+  a CAD-with-truth-values is \emph{projection definable for X}, where ``X'' is a type
+  of formula, e.g. ``Tarski formula'', if a formula of type ``X'' defining the union
+  of the true cells can be constructed using only projection factors.
+\end{enumerate}
+
+The remainder of this document consists of sections for the three
+families of projection operators: Collins, McCallum and Lazard.
+Cross-cutting issues, e.g., model-based versions of projections,
+appear based on which family of projection operator is used.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Collins-style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Collins-style projection}
+George Collins introduced CAD in the early 1970s, and described it in
+a series of presentations and papers:
+%
+\begin{description}
+\item[\autocite{Collins:73b} :]  \fullcite{Collins:73b}
+\item[\autocite{Collins:74b} :]  \fullcite{Collins:74b}
+\item[\autocite{Collins:75} :]  \fullcite{Collins:75}
+\end{description}
+%
+His projection operator was based on \emph{sign invariance}, and was
+coupled with a lifting procedure based on partial evaluation of
+polynomials (at rational and algebraic points) and univariate
+polynomial real root isolation.  The projection adds coefficients,
+discriminants, resultants, subresultant coefficients and
+sub-discriminant coefficients\footnote{Often overlooked is the fact that,
+when constructing a CAD for quantifier elimination,
+he included an even larger ``augmented projection'' to be used for
+projections in free-variable space to ensure that a solution formula
+consisting solely of polynomial sign constraints could be
+constructed.}
+This projection/lifting scheme is \emph{complete} in
+the sense that for any input Tarski formula, it produces a CAD with
+cells in which the polynomials from the formula have constant sign,
+and thus the formula has constant truth value.  When the ``augmented
+projection'' is used, each cell has a defining Tarski formula that can be
+constructed from projection factors and their derivatives.  However, I
+know of no implementation that uses the augmented projection.  Without
+the augmented projection, the resulting CAD is not, in general,
+projection definable for Tarski formulas, though it is projection
+definable for Tarski formulas + indexed root expressions.
+
+
+An improved version of the Collins projection was described by Hong:
+%
+\begin{description}
+\item[\autocite{Hong:90a} :]  \fullcite{Hong:90a}
+\end{description}
+%
+The Hong projection follows the basic principles of the Collins
+projection, but avoids some coefficients, subdiscriminant coefficients
+and subresultant coefficients by providing criteria that allow one to
+determine that they are unnecessary.  This produces CADs with fewer
+cells, and does so in less time.  The resulting projection/lifting
+scheme is still complete.  Like the Collins projection without
+augmented projection, the Hong projection produces CADs that are not,
+in general,
+projection definable for Tarski formulas, though they are projection
+definable for Tarski formulas + indexed root expressions.
+
+The first model-based projection was based on the Hong projection and
+introduced in:
+%
+\begin{description}
+\item[\autocite{JovanovicdeMoura:12} :]  \fullcite{JovanovicdeMoura:12}
+\item[\autocite{Jovanovic:2013} :]  \fullcite{Jovanovic:2013}
+\end{description}
+%
+Its authors dubbed it \emph{the model-based projection}, but because
+we want to use that term to refer to a number of projection
+operators that act similarly, we will refer to it here as the
+\emph{Jovanovi\'c and de Moura Projection}.
+Model-based projections disrupt the project-then-lift paradigm of
+Collins' original CAD construction algorithm and the variants that had
+followed it up to that point.  In model-based projection, we start
+with a ``model point'', and the goal is to construct a (hopefully
+large) CAD cell containing the model point and satisfying some other
+properties.  In the Jovanovi\'c and de Moura Projection, those other
+properties are the sign-invariance of an initial set of polynomials.
+This projection uses the model point to determine that certain
+polynomials that are included in the Hong projection can be left out.
+For example, in projecting polynomial $p := x z^2 + (x - y) z + x y - 1$ with respect
+to $z$ using model point (1,1,1), the Hong projection would include
+$x$ and $x - y$ , the coefficient of the quadratic and
+linear terms of $p$ as a polynomial in $z$.  Since leading coefficient
+$x$ is non-zero at the model
+point and $x$ is included in the projection, the 
+Jovanovi\'c and de Moura Projection deduces that coefficient $x-y$ can
+be left out of the projection without losing the desired properties of
+the cell that will be constructed around the model point.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% McCallum-style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{McCallum-style projection}
+The McCallum projection is described in:
+%
+\begin{description}
+\item[\autocite{McCallum:84} :]  \fullcite{McCallum:84}
+\item[\autocite{McCallum:88} :]  \fullcite{McCallum:88}
+\item[\autocite{McCallum:97} :]  \fullcite{McCallum:97}
+\end{description}
+%
+The McCallum projection is based on \emph{order invariance} and is
+coupled with a lifting procedure that follows Collins' original
+lifting procedure with two differences:
+(1) when a projection factor derived from a projection step (as
+opposed to appearing solely as an input polynomial) is nullified over a cell
+of positive dimension, the lifting procedure exits with ``fail'', and
+(2) when a projection factor $p$ derived from a projection step is
+nullified over 
+a cell $c$ of dimension zero, instead of including the roots of $p(c,x)$ as
+sections in the decomposition of $c\times\realring$, a set called
+\emph{the delineating polynomials} are constructed, and their roots
+above $c$ are used as sections.  The set of delineating polynomials
+consists of all partial derivatives of $p$ of some order $k$, where $k$ is
+determined by $p$ and $c$.
+
+The McCallum projection includes coefficients, discriminants and
+resultants, and so is a subset of the Collins projection and the Hong
+projection.  It has the advantage of producing a smaller
+projection.  However, it is not complete.  As described above, it may
+fail during the lifting process.  (Note that if it returns without
+failure the decomposition is guaranteed to be correct.)
+
+The question of solution formula construction is interesting.  If the
+McCallum projection does not fail, and it does not need to use
+delineating polynomials, the resulting CAD will be projection
+definable for Tarski formulas + indexed root expressions, just as with
+Collins-style projection.  However, if the CAD has a cell that is a
+section of a delineating polynomial and not a section of any
+projection factor, then that cell (and the sectors above and below it)
+cannot be described by a formula including only projection factors.
+However, it can be described by a formula using indexed roots of
+projection factors and an indexed-root expression for one of the
+delineating polynomials of which it is a section.  Moreover, there is
+a procedure for refining the CAD until it is projection definable
+by Tarski formulas.  This is described in \autocite{Brown:99a}.
+
+Nullification of a projection factor is detected and dealt with during
+lifting.  The technical report:
+%
+\begin{description}
+\item[\autocite{Brown:01} :]  \fullcite{Brown:01}
+\end{description}
+%
+... describes techniques for determining, in some instances, that
+nullification does not invalidate projection/lifting, and it
+provides an alternative to McCallum's delineating polynomials for
+handling nullifications of projection factors over
+positive-dimensional regions.  
+
+% Brown-McCallum
+An improved version of McCallum's projection, which we will refer to
+here as the Brown-McCallum projection, was described in
+%
+\begin{description}
+\item[\autocite{Brown:00a} :]  \fullcite{Brown:00a}
+\item[\autocite{Brown:00b} :]  \fullcite{Brown:00b}
+\end{description}
+%
+... which shows that when projecting polynomial $p(x_1,\ldots,x_n)$, the leading
+coefficient in $x_n$ is the only coefficient required for McCallum's
+projection, provided that (1) some analysis of the system of all
+coefficients in $x_n$ of $p$ is done prior to projection, and (2) if
+that system has only single-point solutions, those points are added
+as ``projection points''.  Of course if the system has a
+positive-dimensional set of solutions then McCallum's original
+projection returns ``fail'', as does the improved projection.
+The Brown-McCallum projection is a subset of McCallum's
+projection, but it requires the up-front analysis of systems of
+coefficients. This can be done efficiently relative to the cost of
+including extra coefficients in projection, but adds to the complexity
+of implementations. Given a CAD resulting from the
+Brown-McCallum projection, a defining formula can be constructed from
+indexed-root expressions of projection factors plus indexed-root
+expressions for the coordinates of the ``projection points''. 
+
+McCallum's projection has been improved, specialized and adapted in a
+number of ways.  In the following we
+
+\subsection{Equational constraints and McCallum's projection}
+Improving the performance of CAD construction by explotining
+``equational constraints'' was suggested by Collins in
+%
+\begin{description}
+\item[\autocite{Collins:94} :]  \fullcite{Collins:94}
+\end{description}
+%
+... though only as a suggested avenue of inquiry. What constitutes an
+``equational constraint'' is technical enough that I'll leave it to
+the papers --- except to say that, for polynomial $p$,  if the input formula has the
+property that $p(\alpha) = 0$ for any point $\alpha$ satisfying the
+formula, then $p$ is an equational constraint for that formula.
+McCallum developed this idea
+and proved basic results about how to exploit equational constraints
+during projection and lifting.
+%
+\begin{description}
+\item[\autocite{McCallum:99} :]  \fullcite{McCallum:99}
+\item[\autocite{McCallum:01} :]  \fullcite{McCallum:01}
+\end{description}
+%
+The first of these papers shows how an $n$-level equational constraint
+polymomial can be used to reduce the projection at level $n$.
+The second of these shows how, in the presence of multiple
+$n$-level equational constraints, new equational constraints at lower
+levels are created by the projection process.  These are called
+propagated constraints, and while top-level equational constraint
+polynomials typically only need to be sign invariant within cells,
+propagated constraints need to be order invariant.  So propagated
+constraints need to be handled differently than top-level constraints. 
+
+Further development of McCallum's  approach, including results on
+how the complexity of CAD construction is improved by exploiting
+equational constraints, appears in:
+%
+\begin{description}
+\item[\autocite{EnglandEtAl:2020} :]  \fullcite{EnglandEtAl:2020}
+\end{description}
+%
+
+When there are multiple equational constraint polynomials at the same
+level, the original approach to equational constraints designates one
+of them as \emph{the} constraint for projection purposes.  An
+alternative is to try to formulate a projection operator that can
+leverage all constraints at that level to reduce the projection.
+The following two papers follow that approach for the case of two
+equational constraints.
+
+% Equational-constraints (including multi-equational constraints)
+%
+\begin{description}
+\item[\autocite{BrownMcCallum:05} :]  \fullcite{BrownMcCallum:05}
+\item[\autocite{BrownMcCallum:09} :]  \fullcite{BrownMcCallum:09}
+\end{description}
+%
+
+
+\subsection{Model-based variants of McCallum's projection}
+The model-based projection introduced in
+Jovanovi\'c and de Moura's NLSAT alrogithm was adaptation of
+The Collins-Hong projection to make use of the fact that, ultimately,
+only a single cell was being constructed and, since the sample point
+for that cell is given as input, its coordinates can give information
+about polynomials at or near that point.
+This same idea has been explored in the context of McCallum's
+projection as well.  Strzebonski proposed a model-based version of
+McCallum's projection to be applied to the general problem of
+constructing CADs in:
+% Strzebonski model-based projection Strzebonski:2014
+% One-cell Brown:2013 BrownKosta:2014
+% Cylindrical coverings AbrahamEtAl:2021
+%
+\begin{description}
+\item[\autocite{Strzebonski:2014} :]  \fullcite{Strzebonski:2014}
+\end{description}
+%
+A model-based version of McCallum's projection applied specifically to
+the problem of constructing a single cell around a model point was
+given, first for open cells, and then for general cells in:
+\begin{description}
+\item[\autocite{Brown:2013} :]  \fullcite{Brown:2013}
+\item[\autocite{BrownKosta:2014} :]  \fullcite{BrownKosta:2014}
+\end{description}
+%
+In their introduction of Cylindrical Algebraic Coverings,
+{\'A}brah{\'a}m et al. give a different model-based variant of the
+McCallum projection for the problem of constructing a ``covering'' by
+generalized intervals, rather than a single cell:
+\begin{description}
+\item[\autocite{AbrahamEtAl:2021} :]  \fullcite{AbrahamEtAl:2021}
+\end{description}
+%
+
+
+\subsection{Pojective delineability}
+% Projective Delineablility
+Michel et al. propose a variant of McCallum's projection aimed at
+providing, not delineability, but ``projective delineability''.
+In the usual sense of delineability, we have a total ordering of cells
+decomposing $S\times\realring$, where $S$ is some base cell.  In
+projective delineability, we have 
+a cyclic ordering of cells decomposing $S\times\mathbb{P}$, where
+$\mathbb{P}$ is real projective space.
+%
+\begin{description}
+\item[\autocite{MichelEtAl:2024} :]  \fullcite{MichelEtAl:2024}
+\end{description}
+%
+
+\subsection{McCallum-style projection for ``open'' CAD}
+% McCallum, Strzebonski, Open OneCell, Deducing open projections?
+An ``Open CAD'' is a form of partial CAD in which only the full
+dimensional cells (which are exactly the cells that are open sets)
+matter, where ``matter'' is problem dependent.  For example, in
+deciding the satisfiability of a formula in which all atoms are strict
+inequalities ($<$, $\leq$, or $\neq$), only the full dimensional cells
+``matter'' because there is a solution if and only if there is an open set
+of solutions.  So we can answer the question without considering any
+cell of less than full dimension. 
+Projection (and lifting) becomes a lot easier when we restrict to only
+cells of full dimension.   There have been several papers that have
+looked at adapting McCallum's projection to this easier case.
+%
+\begin{description}
+\item[\autocite{McCallum:93} :]  \fullcite{McCallum:93}
+\item[\autocite{Strzebonski:94} :]  \fullcite{Strzebonski:94}
+\item[\autocite{Brown14} :]  \fullcite{Brown14}
+\item[\autocite{BarEtAl:2023} :]  \fullcite{BarEtAl:2023}
+\end{description}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Lazard-style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Lazard-style projection}
+In the 1990s, Daniel Lazard proposed a projection that was a strict
+improvement on McCallum's projection in two ways: 1) that the
+projection set is a subset of McCallum's, and 2) that it is valid for
+any input set of polynomials, even when nullification occurs.
+% LAzard original Lazard:94
+%
+\begin{description}
+\item[\autocite{Lazard:94} :]  \fullcite{Lazard:94}
+\end{description}
+%
+However, the original article contained an invalid proof, and it
+took about 25 years for a correct proof to be worked out (see below).
+This projection is based not on \emph{sign invariance} or
+\emph{order invariance}, but rather on the invariance of the
+\emph{Lazard valuation} of projection factors in cells.
+Instead of \emph{delineability} or \emph{analytic delineability},
+there is \emph{Lazard delineability}.  It also introduced a new
+lifting mechanism based not only on substitution and univariate real
+root isolation, but on \emph{Lazard evaluation}.  With these concepts,
+Lazard proposed a projection consisting of
+resultants, discriminants and leading and trailing coefficients of
+projection polynomials.  This is a subset of McCallum's original
+projection, which included all coefficients (though not of the
+Brown-McCallum projection).
+
+The completeness of Lazard's projection/lifting makes it attractive.
+It does, however, have the downside that CADs produced by Lazard's
+method are not, in general, projection definable for Tarski formulas
+or for Tarski formulas + indexed root expressions (or at least there
+is no algorithm at present).  Instead, one needs to use
+``Lazard-valuation-indexed root expressions'', which are non-standard.
+Though, in fairness, for many problem instances in which this issue
+occurs, McCallum-based methods would fail anyways.
+
+The correctness of Lazard's projection was established in the
+two-paper sequence:
+%
+\begin{description}
+% Hong-McCalllum McCallumHong2016
+\item[\autocite{McCallumHong2016} :]  \fullcite{McCallumHong2016}
+% McCallum et al.  McCallumEtAl:2019
+\item[\autocite{McCallumEtAl:2019} :]  \fullcite{McCallumEtAl:2019}
+\end{description}
+%
+Soon thereafter, a Lazard analogue to the Brown-McCallum projection
+was given, i.e. testable conditions under which trailing
+coefficients do not need to be included in Lazard's projection.
+%
+\begin{description}
+% McCallum-Brown BrownMcCallum:2020
+\item[\autocite{BrownMcCallum:2020} :]  \fullcite{BrownMcCallum:2020}
+\end{description}
+%
+
+Given the success of specialized versions of McCallum's projection
+that take advantage of ``equational constraints'', one might hope that
+something similar could be developed for Lazard's projection. The
+following two papers make progress in that direction.
+%
+% Equational constrints and Lazard NairDavenportSankaran:2020
+\begin{description}
+\item[\autocite{NairDavenportSankaran:2020} :]  \fullcite{NairDavenportSankaran:2020}
+\item[\autocite{DavenportEtAl:2023} :]  \fullcite{DavenportEtAl:2023}
+\end{description}
+%
+
+
+\printbibliography
+\end{document}
+
