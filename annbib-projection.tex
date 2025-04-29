@@ -173,6 +173,29 @@ Jovanovi\'c and de Moura Projection deduces that coefficient $x-y$ can
 be left out of the projection without losing the desired properties of
 the cell that will be constructed around the model point.  
 
+Based on the Collins-Hong projection, Seidl and Sturm propose what
+they call a ``generic'' projection 
+operator, which is related to the idea of open CAD
+(discussed in the section on McCallum-style projection).
+%
+\begin{description}
+\item[\autocite{SeidlSturm:03b} :]  \fullcite{SeidlSturm:03b}
+\end{description}
+%
+The idea behind ``generic'' projection and ``generic'' CAD is that
+one constructs a partial CAD and a list $L$ of polynomials containing only
+parameters, and the CAD of parameter space is sign-invariant for the
+polynomials in $L$, but only required to be truth-invariant
+(with respect to the quantified input formula) for cells in which all
+the elements of $L$ are non-zero.  The Collins-Hong projection
+includes a stopping criterion based on sequences of leading
+coefficients of the polynomials to be projected.  In generic
+projection, when assuming the non-vanishing of a polynomial purely in
+parameters allows the stopping criterion to be used early, that
+polynomial is added to $L$.  So one strategically chooses polynomials
+to add to $L$ based on their allowing for a smaller projection.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% McCallum-style
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -261,10 +284,12 @@ indexed-root expressions of projection factors plus indexed-root
 expressions for the coordinates of the ``projection points''. 
 
 McCallum's projection has been improved, specialized and adapted in a
-number of ways.  In the following we
+number of ways.  In the following we consider several categories:
+``equational constraints'', model-based versions, a ``projective''
+version, and adaptations to ``open'' CAD construction.
 
 \subsection{Equational constraints and McCallum's projection}
-Improving the performance of CAD construction by explotining
+Improving the performance of CAD construction by exploiting
 ``equational constraints'' was suggested by Collins in
 %
 \begin{description}
@@ -286,7 +311,7 @@ during projection and lifting.
 \end{description}
 %
 The first of these papers shows how an $n$-level equational constraint
-polymomial can be used to reduce the projection at level $n$.
+polynomial can be used to reduce the projection at level $n$.
 The second of these shows how, in the presence of multiple
 $n$-level equational constraints, new equational constraints at lower
 levels are created by the projection process.  These are called
@@ -320,10 +345,45 @@ equational constraints.
 \end{description}
 %
 
+The view of CAD construction from Collins' original paper is that we
+start with a set of polynomials and produce a CAD such that the sign
+of each input polynomial is invariant on each cell, commonly referred
+to as a \emph{sign-invariant CAD}. However, we often start with an
+input formula, and require the CAD such that the formula has constant
+truth value within each cell, commonly referred to as a
+\emph{truth-invariant CAD}.  \emph{Partial CAD}, introduced in
+\fullcite{Hong:90b}, gives an example of a CAD that is truth invariant
+but not necessarily sign invariant for the set of polynomials
+appearing in the input formula.  A \emph{Truth Table Invariant CAD}
+(TTICAD) is defined in terms of a set of formulas, and requires that
+the CAD is truth invariant for each formula in the set.  One benefit
+of this view is that it allows one to exploit an equational constraint
+that only applies to only some of the formulas in the set.
+If one were, for example, ultimately interested in the disjunction of
+the elements of the set, such a constraint could not be exploited by
+the existing theory of equational constraints.
+This work is described in:
+%
+\begin{description}
+\item[\autocite{BradfordEtAl:2016} :]  \fullcite{BradfordEtAl:2016}
+\end{description}
+%
+
+Very recent work by Rizeng Chen generalizes the equational constraints
+projection, treating all constraints symmetrically, as opposed to
+designating one as a ``pivot''.
+%
+\begin{description}
+\item[\autocite{chen:2025} :]  \fullcite{chen:2025}
+\end{description}
+%
+Thanks to Hoon Hong for pointing this out.  A journal version should
+be forthcoming, but I do not have bibliographic information for this yet.
+
 
 \subsection{Model-based variants of McCallum's projection}
 The model-based projection introduced in
-Jovanovi\'c and de Moura's NLSAT alrogithm was adaptation of
+Jovanovi\'c and de Moura's NLSAT algorithm was adaptation of
 The Collins-Hong projection to make use of the fact that, ultimately,
 only a single cell was being constructed and, since the sample point
 for that cell is given as input, its coordinates can give information
@@ -358,7 +418,7 @@ generalized intervals, rather than a single cell:
 %
 
 
-\subsection{Pojective delineability}
+\subsection{Projective delineability}
 % Projective Delineablility
 Michel et al. propose a variant of McCallum's projection aimed at
 providing, not delineability, but ``projective delineability''.
@@ -394,6 +454,17 @@ looked at adapting McCallum's projection to this easier case.
 \item[\autocite{BarEtAl:2023} :]  \fullcite{BarEtAl:2023}
 \end{description}
 %
+
+Taking Open CAD as a starting point, related decompositions 
+with even fewer sample points are described in:
+%
+\begin{description}
+\item[\autocite{Han:2014} :]  \fullcite{Han:2014}
+\item[\autocite{Han:2016} :]  \fullcite{Han:2016}
+\end{description}
+%
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Lazard-style
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
